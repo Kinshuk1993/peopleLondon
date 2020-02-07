@@ -23,3 +23,23 @@ london.use(function (req, res) {
 
 // TO REMOVE - ONLY ROUTE CALLS:
 // resultVar.getPeopleInLondon();
+
+
+const employees = [
+    { id: 1, name: 'John Smith' },
+    { id: 2, name: 'John Smith' },
+    { id: 3, name: 'John Smith' },
+    { id: 4, name: 'John Smith' },
+    { id: 2, name: 'John Smith' },
+    { id: 2, name: 'John Smith' },
+    { id: 9, name: 'John Smith' },
+    { id: 6, name: 'John Smith' },
+    { id: 1, name: 'John Smith' },
+    { id: 4, name: 'John Smith' },
+];
+
+function removeDuplicates(array, key) {
+    let lookup = new Set();
+    return array.filter(obj => !lookup.has(obj[key]) && lookup.add(obj[key]));
+}
+console.log(removeDuplicates(employees, 'id'))

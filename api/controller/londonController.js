@@ -36,3 +36,9 @@ function handleError() {
     console.error("Error: ", error);
     response.send(error);
 }
+
+// function to remove duplicates from the json array
+function removeDuplicates(array, param) {
+    let lookup = new Set();
+    return array.filter(obj => !lookup.has(obj[param]) && lookup.add(obj[param]));
+}
