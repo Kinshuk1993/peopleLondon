@@ -1,0 +1,36 @@
+{
+  "name": "peoplelondon",
+  "version": "1.0.0",
+  "description": "An API which calls swagger APIs and returns people who are living in London, or whose current coordinates are within 50 miles of London",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kinshuk1993/peopleLondon.git"
+  },
+  "keywords": [
+    "peopleLondon",
+    "Londonpeople",
+    "People",
+    "in",
+    "london",
+    "People",
+    "in",
+    "London"
+  ],
+  "author": "Kinshuk Bhardwaj",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Kinshuk1993/peopleLondon/issues"
+  },
+  "homepage": "https://github.com/Kinshuk1993/peopleLondon#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
