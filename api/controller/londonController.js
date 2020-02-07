@@ -1,6 +1,7 @@
 'use strict';
 
 var https = require('https');
+var _ = require('lodash');
 
 exports.getPeopleInLondon = function (request, response) {
     getCountPeople(request, response);
@@ -37,8 +38,40 @@ function handleError() {
     response.send(error);
 }
 
+var employeesCollection = [
+    {
+        "id":1,
+        "name":"Soni",
+        "designation":"SE",
+        "salary":25000
+    },
+    {
+        "id":2,
+        "name":"Rohit",
+        "designation":"SSE",
+        "salary":35000
+    },
+    {
+        "id":3,
+        "name":"Akanksha",
+        "designation":"Manager",
+        "salary":45000
+    },
+    {
+        "id":4,
+        "name":"Mohan",
+        "designation":"Accountant",
+        "salary":30000
+    },
+    {
+        "id":5,
+        "name":"Gita",
+        "designation":"SSE",
+        "salary":35000
+    }
+];
+
 // function to remove duplicates from the json array
 function removeDuplicates(array, param) {
-    let lookup = new Set();
-    return array.filter(obj => !lookup.has(obj[param]) && lookup.add(obj[param]));
+    _.uniq(array, param);
 }

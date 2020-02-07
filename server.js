@@ -2,6 +2,8 @@
 var express = require('express');
 var london = express();
 var port = process.env.PORT || 3000;
+var _ = require('lodash');
+
 // TO REMOVE - ONLY ROUTE CALLS:
 // var resultVar = require('./api/controller/londonController');
 
@@ -38,8 +40,11 @@ const employees = [
     { id: 4, name: 'John Smith' },
 ];
 
-function removeDuplicates(array, key) {
-    let lookup = new Set();
-    return array.filter(obj => !lookup.has(obj[key]) && lookup.add(obj[key]));
+// function to remove duplicates from the json array
+function removeDuplicates(array, param) {
+    _.uniqBy(array, param);
 }
-console.log(removeDuplicates(employees, 'id'))
+
+// console.log(removeDuplicates(employees, 'id'));
+
+removeDuplicates(employees, 'id')
