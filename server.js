@@ -3,7 +3,7 @@ var london = express();
 var port = process.env.PORT || 3000;
 var https = require('https');
 var allUsers = "";
-var londonPeople = "";
+var onlyLondonPeopleFromAPI = "";
 var fs = require('fs');
 
 // importing routes
@@ -41,8 +41,7 @@ function getAllUsers() {
             fs.writeFile("allUsers.json", allUsers, 'utf8', function (err) {
                 // handle file write error and return
                 if (err) {
-                    console.log("An error occured while writing all users to File.");
-                    return console.log(err);
+                    console.log("An error occured while writing all users to File: " + err);
                 }
                 // confirmation of file creation
                 console.log("All users file has been saved.");
@@ -63,20 +62,19 @@ function getPeopleLondon(request, response) {
         res.setEncoding("utf8");
         //keep reading data till it comes
         res.on("data", data => {
-            londonPeople += data;
+            onlyLondonPeopleFromAPI += data;
         });
         // when no more data incoming, process data
         res.on("end", () => {
             // parse json object
-            londonPeople = JSON.parse(londonPeople);
+            onlyLondonPeopleFromAPI = JSON.parse(onlyLondonPeopleFromAPI);
             // stringify to readabale format
-            londonPeople = JSON.stringify(londonPeople, null, 2);
+            onlyLondonPeopleFromAPI = JSON.stringify(onlyLondonPeopleFromAPI, null, 2);
             //write contents to the file
-            fs.writeFile("londonPeople.json", londonPeople, 'utf8', function (err) {
+            fs.writeFile("onlyLondonPeopleFromAPI.json", onlyLondonPeopleFromAPI, 'utf8', function (err) {
                 // handle file write error and return
                 if (err) {
-                    console.log("An error occured while writing London users to File.");
-                    return console.log(err);
+                    console.log("An error occured while writing London users to File: " + err);
                 }
                 // confirmation of file creation
                 console.log("London users file has been saved.");

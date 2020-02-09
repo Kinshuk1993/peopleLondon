@@ -5,5 +5,5 @@ module.exports = function (app) {
 
   // routes
   app.route('/getPeopleLondon')
-    .get(londonController.getPeopleInLondon)
+    .get(londonController.getPeopleInAndAroundLondon)
 };
