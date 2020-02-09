@@ -12,5 +12,5 @@ This API returns the number of people and their data who are either living in "L
 # Running the Application:
 1. Clone the code.
 2. Go to the root directory.
-3. Run the command "npm start".
+3. Run the command "npm start" in the command line.
 4. Hit the URL: "http://localhost:3000/getPeopleLondon" in the browser to see the output.
