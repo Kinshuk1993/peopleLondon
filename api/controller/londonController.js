@@ -9,67 +9,62 @@ var londonPeople = "";
 var countOfPeopleLondon = 0;
 // all users
 var allUsers = "";
+const fs = require('fs');
+const geolib = require('geolib');
+var londonPos = { latitude: 51.507427, longitude: -0.127764 }
 
 exports.getPeopleInLondon = function (request, response) {
     async.waterfall([
-        //1. Return the list of all people living in London using swagger API - UNSURE IF NEEDED ! - TO DECIDE
+        //1. Read all users received
         function (callback) {
-            console.log('Inside function 1');
-            https.get('https://bpdts-test-app.herokuapp.com/city/London/users', res => {
-                res.setEncoding("utf8");
-                res.on("data", data => {
-                    londonPeople += data;
-                });
-                res.on("end", () => {
-                    callback(null, londonPeople, false, '');
-                });
-
-                res.on("error", () => {
-                    console.log('Got error in function 1');
-                    handleError(error, response);
-                    callback(null, londonPeople, true, error);
-                });
+            console.log('In function 1');
+            fs.readFile('./allUsers.json', 'utf8', (fileErr, allUsers) => {
+                // file reading error handling
+                if (fileErr) {
+                    handleError(fileErr);
+                    callback(null, allUsers, true, fileErr);
+                }
+                allUsers = JSON.parse(allUsers);
+                callback(null, allUsers, false, '');
             });
         },
-        //2. Get all the users from the swagger API
-        function (londonPeople, ifError, error, callback) {
-            console.log('In function 2');
+        //2. Process each received each user from the file for calculating distance from london
+        function (allUsers, ifError, error, callback) {
             if (ifError) {
-                console.log('Got error in function 2 from 1');
-                handleError(error, response);
-                callback(null, londonPeople, allUsers, true, error);
-            } else {
-                console.log('No error from frunction 1 in function 2');
-                https.get('https://bpdts-test-app.herokuapp.com/users', res => {
-                    res.setEncoding("utf8");
-                    res.on("data", data => {
-                        allUsers += data;
-                    });
-                    res.on("end", () => {
-                        callback(null, londonPeople, allUsers, false, '');
-                    });
-
-                    res.on("error", () => {
-                        console.log('Got error in function 1');
-                        handleError(error, response);
-                        callback(null, londonPeople, allUsers, true, error);
-                    });
-                });
-            }
-        },
-        //8. Combine all Users
-        function (londonPeople, allUsers, ifError, error, callback) {
-            if (ifError) {
+                handleError(error);
                 callback(null, true, error);
             } else {
-                callback(null, false, '');
+                async.forEachSeries(allUsers, function (eachUser, callback) {
+                    // get users within 50 miles of london - result is in meters
+                    var dist = geolib.getPreciseDistance(londonPos, {latitude: eachUser.latitude, longitude: eachUser.longitude});
+                    // check if user within 50 miles (convert meter to miles first)
+                    if ((dist * 0.000621371) <= 50) {
+                        // process data
+                        console.log(eachUser.id);
+                        // go to next user
+                        callback();
+                    } else {
+                        // go to next user
+                        callback();
+                    }
+                },
+                    function (errFinal) {
+                        if (errFinal) {
+                            handleError(errFinal);
+                            // continue to the next function
+                            callback(null, true, errFinal);
+                        } else {
+                            // continue to the next function
+                            callback(null, false, '');
+                        }
+                    });
             }
         },
     ],
         //FINAL FUNCTION after all functions above has executed
         function (err, ifError, error) {
             if (ifError) {
-                console.log('Error occured: ' + JSON.parse(error));
+                handleError(error);
                 response.send(error);
             } else {
                 console.log('No error in final');
@@ -78,35 +73,9 @@ exports.getPeopleInLondon = function (request, response) {
         });
 }
 
-// function to get count of people living in london
-function getCountPeople(request, response) {
-    // create options to make the https get call
-    var options = {
-        host: 'bpdts-test-app.herokuapp.com',
-        path: '/city/London/users',
-        method: 'GET'
-    }
-
-    //making the https get call to the mentioned swagger api
-    var getReq = https.request(options, function (res) {
-        res.on('data', function (data) {
-            console.info(JSON.parse(data).length);
-            response.json(JSON.parse(data).length);
-        });
-    });
-
-    // close the request
-    getReq.end();
-
-    // handle the error
-    getReq.on('error', function (error) {
-        handleError(error, response);
-    });
-}
-
-function handleError() {
-    console.error("Error: ", error);
-    // response.send(error);
+// Function to handle the error
+function handleError(error) {
+    console.error("Error: ", JSON.stringify(error, null, 2));
 }
 
 // function to remove duplicates from the json array
